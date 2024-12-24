@@ -41,8 +41,8 @@ String accessCode; // Variabel ini untuk menampung hasil pembacaan kode RFID
 
 // Variabel untuk keperluan aktuator
 int vibration; // Variabel ini untuk menampung nilai getaran
-String alarm_keamanan; // Variabel ini untuk status buzzer: ON/OFF
-String doorstate; // Variabel ini untuk status kunci pintu: Terbuka/Tertutup
+String old_alarm = "OFF", alarm_keamanan; // Variabel ini untuk status buzzer: ON/OFF
+String old_doorstate = "Closed", doorstate; // Variabel ini untuk status kunci pintu: Terbuka/Tertutup
 bool relayON = HIGH; bool relayOFF = LOW; // Jika anda menggunakan NO pada relay maka yang terjadi adalah Active Low, sedangkan jika anda menggunakan NC pada relay maka yang terjadi adalah Active High
 
 // Method untuk mengatur konektivitas
@@ -67,15 +67,17 @@ void initSensorRFID(){
 
 // Method untuk baca sensor RFID
 void readSensorRFID(){
-  // Cek untuk kartu baru
+  // Jika tidak ada kartu baru yang terdeteksi (mengembalikan false), maka keluar dari blok if
   if(!rfid.PICC_IsNewCardPresent()) { 
     return;
   }
   
-  // Verifikasi apakah UID sudah dibaca
+  // Jika pembacaan UID gagal (mengembalikan false), maka keluar dari blok if
   if(!rfid.PICC_ReadCardSerial()) { 
     return;
   }
+
+  // Melanjutkan verifikasi UID Tag RFID
   if (rfid.uid.uidByte[0] != UniqueIDentifier[0] || rfid.uid.uidByte[1] != UniqueIDentifier[1] || rfid.uid.uidByte[2] != UniqueIDentifier[2] || rfid.uid.uidByte[3] != UniqueIDentifier[3]) {
     // Menampung User ID ke dalam array
     for (byte i = 0; i < 4; i++) {
@@ -83,28 +85,55 @@ void readSensorRFID(){
       accessCode.concat(String(UniqueIDentifier[i] < 0x10 ? " 0" : " "));
       accessCode.concat(String(UniqueIDentifier[i], HEX));
     } accessCode.toUpperCase();
+
+    // Cetak UID Tag RFID
     Serial.print(F("\nUID tag :"));
     printHex(rfid.uid.uidByte, rfid.uid.size);
+    
     if(accessCode.substring(1) == UID_RFID1){ // Jika kartu RFID dikenali oleh scanner sebagai User ID-1, maka lakukan :
       Serial.print("\nPesan RFID : "); Serial.println("Akses Buka Pintu Green House Berhasil"); doorstate = "Open"; 
-      responRFID(); // Respon RFID ditampilkan ke LCD
       digitalWrite(RSOLENOID_DOORLOCK_PIN, relayON); delay(1000); // Solenoid door lock: open
+
+      // Cek perubahan status alarm keamanan saat ada getaran
+      if(old_doorstate != doorstate){
+        responRFID();
+        sendAntares(String(old_alarm), String(doorstate));
+        old_doorstate = doorstate;
+      }
     }
     else if(accessCode.substring(1) == UID_RFID2){ // Jika kartu RFID dikenali oleh scanner sebagai User ID-2, maka lakukan :
       Serial.print("\nPesan RFID : "); Serial.println("Akses Tutup Pintu Green House Berhasil"); doorstate = "Closed"; 
-      responRFID(); // Respon RFID ditampilkan ke LCD
       digitalWrite(RSOLENOID_DOORLOCK_PIN, relayOFF); delay(1000); // Solenoid door lock: closed
+
+      // Cek perubahan status alarm keamanan saat ada getaran
+      if(old_doorstate != doorstate){
+        responRFID();
+        sendAntares(String(old_alarm), String(doorstate));
+        old_doorstate = doorstate;
+      }      
     }  
     else{ // Jika kartu RFID tidak dikenali oleh scanner maka :
       Serial.print("\nPesan RFID : "); Serial.println("Akses Green House Gagal/UID Belum Terdaftar"); doorstate = "Closed"; 
-      responRFID(); // Respon RFID ditampilkan ke LCD
       digitalWrite(RSOLENOID_DOORLOCK_PIN, relayOFF); delay(1000); // Solenoid door lock: closed
+
+      // Cek perubahan status alarm keamanan saat ada getaran
+      if(old_doorstate != doorstate){
+        responRFID();
+        sendAntares(String(old_alarm), String(doorstate));
+        old_doorstate = doorstate;
+      }      
     }
   }
   else { // Jika tidak ada aktivitas maka :
-    Serial.print("\nPesan RFID : "); Serial.println("Akses Green House Steril\n"); doorstate = "Closed"; 
-    responRFID(); // Respon RFID ditampilkan ke LCD
+    Serial.print("\nPesan RFID : "); Serial.println("Akses Green House Steril\n"); doorstate = "Closed";
     digitalWrite(RSOLENOID_DOORLOCK_PIN, relayOFF); delay(1000); // Solenoid door lock: closed
+
+    // Cek perubahan status alarm keamanan saat ada getaran
+    if(old_doorstate != doorstate){
+      responRFID();
+      sendAntares(String(old_alarm), String(doorstate));
+      old_doorstate = doorstate;
+    }      
   }
 }
 
@@ -125,12 +154,27 @@ void printHex(byte *buffer, byte bufferSize) {
 // Method untuk baca sensor SW-420
 void readSensorSW420(){
   vibration = digitalRead(SW420_PIN); // Mengukur nilai getaran
+
   if(vibration == HIGH){ // Jika terdeteksi getaran maka:
     digitalWrite(BUZZER_PIN, HIGH); // Buzzer menyala
-    alarm_keamanan = "ON"; Serial.println("Status buzzer = "+String(alarm_keamanan)+" - Danger"); // Status Bahaya
+    alarm_keamanan = "ON";
+
+    // Cek perubahan status alarm keamanan saat ada getaran
+    if(old_alarm != alarm_keamanan){
+      Serial.println("Status buzzer = "+String(alarm_keamanan)+" - Danger"); // Status Bahaya
+      sendAntares(String(alarm_keamanan), String(old_doorstate));
+      old_alarm = alarm_keamanan;
+    }
   } else { // Jika tidak ada getaran maka:
     digitalWrite(BUZZER_PIN, LOW); // Buzzer mati
-    alarm_keamanan = "OFF"; Serial.println("Status buzzer = "+String(alarm_keamanan)+" - Safe"); // Status Aman
+    alarm_keamanan = "OFF"; 
+    
+    // Cek perubahan status alarm keamanan saat tak ada getaran
+    if(old_alarm != alarm_keamanan){
+      Serial.println("Status buzzer = "+String(alarm_keamanan)+" - Safe"); // Status Aman
+      sendAntares(String(alarm_keamanan), String(old_doorstate));
+      old_alarm = alarm_keamanan;
+    }
   }
 }
 
@@ -149,7 +193,7 @@ void responRFID(){
 }
 
 // Kirim Data ke Antares
-void sendAntares(){
+void sendAntares(String alarm, String pintu){
   if ((millis() - lastTime) > timerDelay) { // Jika waktu sekarang dikurangi waktu terakhir lebih besar dari 5 detik maka :
     if (WiFi.status() == WL_CONNECTED) { // Jika tersambung ke jaringan maka :
       // Memulai request http
@@ -162,9 +206,9 @@ void sendAntares(){
 
       // Data sensor semuanya dikirim ke server melalui protokol http
       httpRequestData += "{\"m2m:cin\": { \"con\":\"{\\\"Alarm Keamanan\\\":\\\"";
-      httpRequestData += String(alarm_keamanan);
+      httpRequestData += String(alarm);
       httpRequestData += "\\\",\\\"Status Pintu\\\":\\\"";
-      httpRequestData += String(doorstate);
+      httpRequestData += String(pintu);
       httpRequestData += "\\\"}\"}}";
       // Serial.println(httpRequestData); Serial.println(); // Buka komen ini untuk debugging
 
@@ -204,7 +248,6 @@ void setup() {
 void loop(){
   readSensorRFID(); // Memanggil method readSensorRFID
   readSensorSW420(); // Memanggil method readSensorSW420
-  sendAntares(); // Memanggil method sendAntares
 }
 
 // Nama Final Project : Smart Green House (Device-2: NodeMCU)
