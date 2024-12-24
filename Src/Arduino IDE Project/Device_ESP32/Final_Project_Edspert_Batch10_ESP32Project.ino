@@ -46,9 +46,9 @@ void connectToWiFi() {
     Serial.print("."); delay(500);
   }
   if (WiFi.status() == WL_CONNECTED) { // Jika berhasil terhubung ke jaringan maka cetak di serial monitor :
-    Serial.println("=========================================");
-    Serial.println("\nTelah terhubung ke "+String(WIFISSID)+"\n");
-    Serial.println("=========================================");
+    Serial.println("\n=========================================");
+    Serial.println("Telah terhubung ke "+String(WIFISSID));
+    Serial.println("=========================================\n");
   }
 }
 
