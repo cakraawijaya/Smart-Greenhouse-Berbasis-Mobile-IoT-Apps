@@ -94,7 +94,7 @@ void readSensorRFID(){
       Serial.print("\nPesan RFID : "); Serial.println("Akses Buka Pintu Green House Berhasil"); doorstate = "Open"; 
       digitalWrite(RSOLENOID_DOORLOCK_PIN, relayON); delay(1000); // Solenoid door lock: open
 
-      // Cek perubahan status alarm keamanan saat ada getaran
+      // Cek perubahan status pintu green house
       if(old_doorstate != doorstate){
         responRFID();
         sendAntares(String(old_alarm), String(doorstate));
@@ -105,7 +105,7 @@ void readSensorRFID(){
       Serial.print("\nPesan RFID : "); Serial.println("Akses Tutup Pintu Green House Berhasil"); doorstate = "Closed"; 
       digitalWrite(RSOLENOID_DOORLOCK_PIN, relayOFF); delay(1000); // Solenoid door lock: closed
 
-      // Cek perubahan status alarm keamanan saat ada getaran
+      // Cek perubahan status pintu green house
       if(old_doorstate != doorstate){
         responRFID();
         sendAntares(String(old_alarm), String(doorstate));
@@ -116,7 +116,7 @@ void readSensorRFID(){
       Serial.print("\nPesan RFID : "); Serial.println("Akses Green House Gagal/UID Belum Terdaftar"); doorstate = "Closed"; 
       digitalWrite(RSOLENOID_DOORLOCK_PIN, relayOFF); delay(1000); // Solenoid door lock: closed
 
-      // Cek perubahan status alarm keamanan saat ada getaran
+      // Cek perubahan status pintu green house
       if(old_doorstate != doorstate){
         responRFID();
         sendAntares(String(old_alarm), String(doorstate));
@@ -128,7 +128,7 @@ void readSensorRFID(){
     Serial.print("\nPesan RFID : "); Serial.println("Akses Green House Steril\n"); doorstate = "Closed";
     digitalWrite(RSOLENOID_DOORLOCK_PIN, relayOFF); delay(1000); // Solenoid door lock: closed
 
-    // Cek perubahan status alarm keamanan saat ada getaran
+    // Cek perubahan status pintu green house
     if(old_doorstate != doorstate){
       responRFID();
       sendAntares(String(old_alarm), String(doorstate));
