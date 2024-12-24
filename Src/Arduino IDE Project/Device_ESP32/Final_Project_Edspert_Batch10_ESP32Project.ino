@@ -55,7 +55,11 @@ void bacaSensor() {
   adcLDR = analogRead(PIN_LDR); // Baca ADC Sensor LDR
   voltage = (adcLDR / 4095.0) * 5; // ESP bit=12 -> 4095, 5=Tegangan Referensi
   resistance = (5 * R_FIXED / voltage) - R_FIXED; // Menghitung Resistansi Cahaya
-  lux = 500 / pow(resistance / 1000, calibrationValue); // Mengukur nilai intensitas cahaya
+  
+  // Mengukur nilai intensitas cahaya
+  lux = 500 / pow(resistance / 1000, calibrationValue);
+  if(lux >= 100000){ lux = 100000; }
+  if(lux < 0){ lux = 0; }
   
   fc28.calibration(7); // 7 => agar pembacaan sensor fc28 mendekati benar (diisi bebas)
   moisture = fc28.getSoilMoisture(); // Mengukur nilai kelembaban tanah
