@@ -487,8 +487,10 @@ void loop() {
 <br><br>
 
 ## Notes
-> [!IMPORTANT]
-> There is a Little Bug in the RFID Reading Part.
+<blockquote>
+   <strong><img src="https://github.com/user-attachments/assets/932b96eb-cbc7-42f1-8938-43cb431889a5" width="20" height="20"> Important</strong><br><br>
+   <p class="small-text">There is a Little Bug in the RFID Reading Part.</p>
+</blockquote>
 
 <br><br>
 
