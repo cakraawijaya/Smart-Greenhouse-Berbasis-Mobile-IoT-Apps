@@ -31,15 +31,15 @@ FC28Sensor fc28(PIN_MOISTURE); // Konstruktor FC28Sensor -> fc28
 // Aktuator
 #define PIN_WATERPUMP 4 // Pin Antarmuka Pompa
 bool relayON = HIGH; bool relayOFF = LOW; // Jika anda menggunakan NO pada relay maka yang terjadi adalah Active Low, sedangkan jika anda menggunakan NC pada relay maka yang terjadi adalah Active High
-String pump; // Status pompa
+String old_pump = "OFF", pump; // Status pompa
 
 // Variabel untuk keperluan sensor
-int moisture = 0; // FC-28
-int adcLDR = 0; const float R_FIXED = 10.0, calibrationValue = 1.2; float voltage, resistance, lux; // LDR
-int temp = 0, hum = 0; // DHT
+int old_moisture = 0, moisture = 0; // FC-28
+int adcLDR = 0, old_lux = 0, lux; const float R_FIXED = 10.0, calibrationValue = 1.2; float voltage, resistance; // LDR
+int old_temp = 0, temp = 0, old_hum = 0, hum = 0; // DHT
 
 // Method untuk mengatur konektivitas
-void ConnectToWiFi() {
+void connectToWiFi() {
   WiFi.mode(WIFI_STA); // Membuat perangkat sebagai station
   WiFi.begin(WIFISSID, PASSWORD); Serial.print("Menyambungkan ke jaringan"); // Memulai jaringan
   while (WiFi.status() != WL_CONNECTED) { // Selama tidak berhasil terhubung ke jaringan maka cetak di serial monitor :
@@ -51,31 +51,58 @@ void ConnectToWiFi() {
 }
 
 // Baca Data Sensor
-void bacaSensor() {
+void readSensor() {
+  // Mengukur nilai temperatur udara
+  temp = dht.readTemperature();
+
+  // Cek perubahan nilai temperatur udara
+  if(temp != old_temp){  
+    Serial.println("Suhu Udara: "+String(temp)+"°C");
+    sendAntares(String(temp),String(old_hum),String(old_moisture),String(old_lux),String(old_pump));
+    old_temp = temp; 
+  }
+
+  // Mengukur nilai kelembaban udara
+  hum = dht.readHumidity(); 
+
+  // Cek perubahan nilai kelembaban udara
+  if(hum != old_hum){ 
+    Serial.println("Kelembaban Udara: "+String(hum)+"%");  
+    sendAntares(String(old_temp),String(hum),String(old_moisture),String(old_lux),String(old_pump));
+    old_hum = hum; 
+  }
+
+  // Mengukur nilai kelembaban tanah
+  fc28.calibration(7); // 7 => agar pembacaan sensor fc28 mendekati benar (diisi bebas)
+  moisture = fc28.getSoilMoisture(); 
+
+  // Cek perubahan nilai kelembaban tanah
+  if(moisture != old_moisture){ 
+    Serial.println("Kelembaban Tanah: "+String(moisture)+"%");
+    sendAntares(String(old_temp),String(old_hum),String(moisture),String(old_lux),String(old_pump));
+    old_moisture = moisture; 
+  }
+
+  // Mengukur nilai intensitas cahaya
   adcLDR = analogRead(PIN_LDR); // Baca ADC Sensor LDR
   voltage = (adcLDR / 4095.0) * 5; // ESP bit=12 -> 4095, 5=Tegangan Referensi
   resistance = (5 * R_FIXED / voltage) - R_FIXED; // Menghitung Resistansi Cahaya
-  
-  // Mengukur nilai intensitas cahaya
+
+  // Menghitung nilai lux
   lux = 500 / pow(resistance / 1000, calibrationValue);
   if(lux >= 100000){ lux = 100000; }
   if(lux < 0){ lux = 0; }
-  
-  fc28.calibration(7); // 7 => agar pembacaan sensor fc28 mendekati benar (diisi bebas)
-  moisture = fc28.getSoilMoisture(); // Mengukur nilai kelembaban tanah
-  temp = dht.readTemperature(); // Mengukur nilai temperature udara
-  hum = dht.readHumidity(); // Mengukur nilai kelembaban udara
-  
-  // Display data ke serial monitor
-  Serial.println("=========================================");
-  Serial.println("Suhu Udara: "+String(temp)+"°C");
-  Serial.println("Kelembaban Udara: "+String(hum)+"%");
-  Serial.println("Kelembaban Tanah: "+String(moisture)+"%");
-  Serial.println("Intensitas Cahaya: "+String(lux)+"lux");
+
+  // Cek perubahan nilai lux
+  if(lux != old_lux){ 
+    Serial.println("Intensitas Cahaya: "+String(lux)+"lux");
+    sendAntares(String(old_temp),String(old_hum),String(old_moisture),String(lux),String(old_pump));
+    old_lux = lux; 
+  }
 }
 
 // Kendali Otomatis Pompa
-void Threshold(){
+void waterPumpControl(){
   // Jika suhu udara rendah / kelembaban tinggi / intensitas cahaya rendah / tanah basah, maka : 
   if (temp >= 0 && temp < 16 || hum > 90 && hum <= 100 || lux >= 0 && lux < 200 || moisture >= wetSoil) {
     pump = "OFF"; // status pompa: OFF
@@ -94,17 +121,17 @@ void Threshold(){
     digitalWrite(PIN_WATERPUMP, relayON); // Pompa air menyala
   }
   
-  // Cetak status pompa ke serial monitor
-  Serial.println("Status Pompa: "+String(pump)); 
-  Serial.println("=========================================");
+  // Cek perubahan status pompa
+  if(old_pump != pump){
+    Serial.println("Status Pompa: "+String(pump)); 
+    sendAntares(String(old_temp),String(old_hum),String(old_moisture),String(old_lux),String(pump));
+    old_pump = pump;
+  }
 }
 
 // Kirim Data ke Antares
-void kirimAntares() {
+void sendAntares(String suhu_udara, String kelembaban_udara, String kelembaban_tanah, String cahaya, String pompa) {
   if ((millis() - lastTime) > timerDelay) { // Jika waktu sekarang dikurangi waktu terakhir lebih besar dari 5 detik maka :
-    bacaSensor(); // Memanggil method bacaSensor
-    Threshold(); // Memanggil method Threshold
-    
     if (WiFi.status() == WL_CONNECTED) { // Jika tersambung ke jaringan maka :
       // Memulai request http
       http.begin(client, serverName);
@@ -116,15 +143,15 @@ void kirimAntares() {
 
       // Data sensor semuanya dikirim ke server melalui protokol http
       httpRequestData += "{\"m2m:cin\": { \"con\":\"{\\\"Suhu Udara (°C)\\\":\\\"";
-      httpRequestData += String(temp);
+      httpRequestData += String(suhu_udara);
       httpRequestData += "\\\",\\\"Kelembapan Udara (%)\\\":\\\"";
-      httpRequestData += String(hum);
+      httpRequestData += String(kelembaban_udara);
       httpRequestData += "\\\",\\\"Kelembapan Tanah (%)\\\":\\\"";
-      httpRequestData += String(moisture);
+      httpRequestData += String(kelembaban_tanah);
       httpRequestData += "\\\",\\\"Intensitas Cahaya (lux)\\\":\\\"";
-      httpRequestData += String(lux);
+      httpRequestData += String(cahaya);
       httpRequestData += "\\\",\\\"Status Pompa\\\":\\\"";
-      httpRequestData += String(pump);
+      httpRequestData += String(pompa);
       httpRequestData += "\\\"}\"}}";
       // Serial.println(httpRequestData); Serial.println(); // Buka komen ini untuk debugging
 
@@ -151,12 +178,13 @@ void setup() {
   dht.begin(); // Memulai sensor dht
   pinMode(PIN_LDR, INPUT); // LDR sebagai input
   pinMode(PIN_WATERPUMP, OUTPUT); // Pompa sebagai output
-  ConnectToWiFi(); // Memanggil method ConnectToWiFi
+  connectToWiFi(); // Memanggil method connectToWiFi
 }
 
 // Method untuk mengatur perulangan
 void loop() {
-  kirimAntares(); // Memanggil method kirimAntares
+  readSensor(); // Memanggil method readSensor
+  waterPumpControl(); // Memanggil method waterPumpControl
 }
 
 // Nama Final Project : Smart Green House (Device-1: ESP32)
