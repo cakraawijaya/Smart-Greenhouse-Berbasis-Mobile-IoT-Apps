@@ -143,7 +143,7 @@ void sendAntares(String suhu_udara, String kelembaban_udara, String kelembaban_t
       http.addHeader("Content-Type","application/json;ty=4");
       http.addHeader("Accept","application/json");
 
-      // Data sensor semuanya dikirim ke server melalui protokol http
+      // Data sensor dan aktuator semuanya dikirim ke server melalui protokol http
       httpRequestData += "{\"m2m:cin\": { \"con\":\"{\\\"Suhu Udara (°C)\\\":\\\"";
       httpRequestData += String(suhu_udara);
       httpRequestData += "\\\",\\\"Kelembapan Udara (%)\\\":\\\"";
