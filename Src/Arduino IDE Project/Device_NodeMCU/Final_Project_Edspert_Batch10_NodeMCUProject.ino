@@ -46,14 +46,16 @@ String doorstate; // Variabel ini untuk status kunci pintu: Terbuka/Tertutup
 bool relayON = HIGH; bool relayOFF = LOW; // Jika anda menggunakan NO pada relay maka yang terjadi adalah Active Low, sedangkan jika anda menggunakan NC pada relay maka yang terjadi adalah Active High
 
 // Method untuk mengatur konektivitas
-void ConnectToWiFi() {
+void connectToWiFi() {
   WiFi.mode(WIFI_STA); // Membuat perangkat sebagai station
   WiFi.begin(WIFISSID, PASSWORD); Serial.print("Menyambungkan ke jaringan"); // Memulai jaringan
   while (WiFi.status() != WL_CONNECTED) { // Selama tidak berhasil terhubung ke jaringan maka cetak di serial monitor :
     Serial.print("."); delay(500);
   }
   if (WiFi.status() == WL_CONNECTED) { // Jika berhasil terhubung ke jaringan maka cetak di serial monitor :
-    Serial.println("\nTelah terhubung ke "+String(WIFISSID)+"\n\n");
+    Serial.println("\n=========================================");
+    Serial.println("Telah terhubung ke "+String(WIFISSID));
+    Serial.println("=========================================\n");
   }
 }
 
@@ -64,7 +66,7 @@ void initSensorRFID(){
 }
 
 // Method untuk baca sensor RFID
-void bacaSensorRFID(){
+void readSensorRFID(){
   // Cek untuk kartu baru
   if(!rfid.PICC_IsNewCardPresent()) { 
     return;
@@ -121,7 +123,7 @@ void printHex(byte *buffer, byte bufferSize) {
 }
 
 // Method untuk baca sensor SW-420
-void bacaSensorSW420(){
+void readSensorSW420(){
   vibration = digitalRead(SW420_PIN); // Mengukur nilai getaran
   if(vibration == HIGH){ // Jika terdeteksi getaran maka:
     digitalWrite(BUZZER_PIN, HIGH); // Buzzer menyala
@@ -133,7 +135,7 @@ void bacaSensorSW420(){
 }
 
 // Method untuk memulai LCD
-void LCDinit(){
+void lcdInit(){
   lcd.init(); // Memulai LCD
   lcd.backlight(); delay(250); lcd.noBacklight(); delay(250); lcd.backlight(); // Splash Screen
   lcd.setCursor(0,0); lcd.print("Smart GreenHouse"); lcd.setCursor(4,1); lcd.print("Device-2");delay(10000); // Menampilkan data pada LCD
@@ -147,7 +149,7 @@ void responRFID(){
 }
 
 // Kirim Data ke Antares
-void kirimDataAntares(){
+void sendAntares(){
   if ((millis() - lastTime) > timerDelay) { // Jika waktu sekarang dikurangi waktu terakhir lebih besar dari 5 detik maka :
     if (WiFi.status() == WL_CONNECTED) { // Jika tersambung ke jaringan maka :
       // Memulai request http
@@ -168,15 +170,18 @@ void kirimDataAntares(){
 
       // Respon http
       int httpResponseCode = http.POST(httpRequestData);
+      Serial.println("=========================================");
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
-      Serial.println("\n");
+      Serial.println("=========================================");
 
       // Mengakhiri request http
       http.end();
     }
     else { // Jika tidak tersambung ke jaringan maka :
+      Serial.println("=========================================");
       Serial.println("WiFi Disconnected");
+      Serial.println("=========================================");
     } 
     lastTime = millis(); // Untuk menghitung waktu yang telah berlalu sejak pengiriman data terakhir
   }
@@ -191,15 +196,15 @@ void setup() {
   digitalWrite(BUZZER_PIN, LOW); // Default buzzer: OFF
   digitalWrite(RSOLENOID_DOORLOCK_PIN, HIGH); // Default solenoid door lock: OFF (Mengunci)
   initSensorRFID(); // Memanggil method initSensorRFID
-  ConnectToWiFi(); // Memanggil method ConnectToWiFi
-  LCDinit(); // Memanggil method LCDinit
+  connectToWiFi(); // Memanggil method connectToWiFi
+  lcdInit(); // Memanggil method lcdInit
 }
 
 // Method ini akan dikerjakan berulang kali
 void loop(){
-  bacaSensorRFID(); // Memanggil method bacaSensorRFID
-  bacaSensorSW420(); // Memanggil method bacaSensorSW420
-  kirimDataAntares(); // Memanggil method kirimDataAntares
+  readSensorRFID(); // Memanggil method readSensorRFID
+  readSensorSW420(); // Memanggil method readSensorSW420
+  sendAntares(); // Memanggil method sendAntares
 }
 
 // Nama Final Project : Smart Green House (Device-2: NodeMCU)
