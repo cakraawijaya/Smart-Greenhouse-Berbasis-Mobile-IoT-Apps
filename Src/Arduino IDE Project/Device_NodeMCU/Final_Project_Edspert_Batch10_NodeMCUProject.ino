@@ -92,8 +92,8 @@ void readSensorRFID(){
     
     if(accessCode.substring(1) == UID_RFID1){ // Jika kartu RFID dikenali oleh scanner sebagai User ID-1, maka lakukan :
       digitalWrite(RSOLENOID_DOORLOCK_PIN, relayON); delay(1000);
-      doorstate = "Open"; 
       if(old_doorstate != doorstate){
+        doorstate = "Open"; 
         Serial.print("\nPesan RFID : "); Serial.println("Berhasil Buka Pintu Green House");
         responRFID();
         sendAntares(String(old_alarm), String(doorstate));
@@ -102,8 +102,8 @@ void readSensorRFID(){
     }
     else if(accessCode.substring(1) == UID_RFID2){ // Jika kartu RFID dikenali oleh scanner sebagai User ID-2, maka lakukan :
       digitalWrite(RSOLENOID_DOORLOCK_PIN, relayOFF); delay(1000);
-      doorstate = "Closed";
       if(old_doorstate != doorstate){
+        doorstate = "Closed";
         Serial.print("\nPesan RFID : "); Serial.println("Berhasil Tutup Pintu Green House");
         responRFID();
         sendAntares(String(old_alarm), String(doorstate));
@@ -112,8 +112,8 @@ void readSensorRFID(){
     }  
     else{ // Jika kartu RFID tidak dikenali oleh scanner maka :
       digitalWrite(RSOLENOID_DOORLOCK_PIN, relayOFF); delay(1000); 
-      doorstate = "Closed";
       if(old_doorstate != doorstate){
+        doorstate = "Closed";
         Serial.print("\nPesan RFID : "); Serial.println("Akses Green House Gagal/UID Belum Terdaftar");
         responRFID();
         sendAntares(String(old_alarm), String(doorstate));
@@ -123,8 +123,8 @@ void readSensorRFID(){
   }
   else { // Jika tidak ada aktivitas maka :
     digitalWrite(RSOLENOID_DOORLOCK_PIN, relayOFF); delay(1000);
-    doorstate = "Closed";
     if(old_doorstate != doorstate){
+      doorstate = "Closed";
       Serial.print("\nPesan RFID : "); Serial.println("Green House Sudah Steril\n");
       responRFID();
       sendAntares(String(old_alarm), String(doorstate));
