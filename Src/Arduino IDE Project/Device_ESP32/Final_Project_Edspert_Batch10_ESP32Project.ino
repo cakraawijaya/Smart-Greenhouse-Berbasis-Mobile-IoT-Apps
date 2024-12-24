@@ -46,7 +46,9 @@ void connectToWiFi() {
     Serial.print("."); delay(500);
   }
   if (WiFi.status() == WL_CONNECTED) { // Jika berhasil terhubung ke jaringan maka cetak di serial monitor :
+    Serial.println("=========================================");
     Serial.println("\nTelah terhubung ke "+String(WIFISSID)+"\n");
+    Serial.println("=========================================");
   }
 }
 
@@ -157,14 +159,18 @@ void sendAntares(String suhu_udara, String kelembaban_udara, String kelembaban_t
 
       // Respon http
       int httpResponseCode = http.POST(httpRequestData);
+      Serial.println("=========================================");
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
+      Serial.println("=========================================");
 
       // Mengakhiri request http
       http.end();
     }
     else { // Jika tidak tersambung ke jaringan maka :
+      Serial.println("=========================================");
       Serial.println("WiFi Disconnected");
+      Serial.println("=========================================");
     } 
     lastTime = millis(); // Untuk menghitung waktu yang telah berlalu sejak pengiriman data terakhir
   }
