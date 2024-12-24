@@ -46,7 +46,7 @@ void connectToWiFi() {
     Serial.print("."); delay(500);
   }
   if (WiFi.status() == WL_CONNECTED) { // Jika berhasil terhubung ke jaringan maka cetak di serial monitor :
-    Serial.println("\nTelah terhubung ke "+String(WIFISSID)+"\n\n");
+    Serial.println("\nTelah terhubung ke "+String(WIFISSID)+"\n");
   }
 }
 
@@ -159,7 +159,6 @@ void sendAntares(String suhu_udara, String kelembaban_udara, String kelembaban_t
       int httpResponseCode = http.POST(httpRequestData);
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
-      Serial.println("\n");
 
       // Mengakhiri request http
       http.end();
