@@ -486,6 +486,12 @@ void loop() {
 
 <br><br>
 
+## Catatan
+> [!PENTING]
+> Ada Sedikit Masalah di Bagian Pembacaan RFID.
+
+<br><br>
+
 ## Apresiasi
 Jika karya ini bermanfaat bagi anda, maka dukunglah karya ini sebagai bentuk apresiasi kepada penulis dengan mengklik tombol ``` ⭐Bintang ``` di bagian atas repositori.
 

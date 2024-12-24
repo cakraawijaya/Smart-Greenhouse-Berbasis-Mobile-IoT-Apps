@@ -35,7 +35,7 @@ String pump; // Status pompa
 
 // Variabel untuk keperluan sensor
 int moisture = 0; // FC-28
-int ldr = 0, adcValue = 0; const float GAMMA = 0.7, RL10 = 50; float voltage, resistance, lux; // LDR
+int adcLDR = 0; const float R_FIXED = 10.0, calibrationValue = 1.2; float voltage, resistance, lux; // LDR
 int temp = 0, hum = 0; // DHT
 
 // Method untuk mengatur konektivitas
@@ -52,10 +52,11 @@ void ConnectToWiFi() {
 
 // Baca Data Sensor
 void bacaSensor() {
-  adcValue = analogRead(PIN_LDR); // Baca Tegangan Analog Sensor LDR
-  voltage = adcValue * 5/4095.0; // ESP bit=12 -> 4095, 5=Tegangan Referensi
-  resistance = 2000 * voltage / (1 - voltage / 5); // Menghitung Resistansi Cahaya
-  ldr = pow(RL10 * 1e3 * pow(10, GAMMA) / resistance, (1 / GAMMA)); // Mengukur nilai intensitas cahaya
+  adcLDR = analogRead(PIN_LDR); // Baca ADC Sensor LDR
+  voltage = (adcLDR / 4095.0) * 5; // ESP bit=12 -> 4095, 5=Tegangan Referensi
+  resistance = (5 * R_FIXED / voltage) - R_FIXED; // Menghitung Resistansi Cahaya
+  lux = 500 / pow(resistance / 1000, calibrationValue); // Mengukur nilai intensitas cahaya
+  
   fc28.calibration(7); // 7 => agar pembacaan sensor fc28 mendekati benar (diisi bebas)
   moisture = fc28.getSoilMoisture(); // Mengukur nilai kelembaban tanah
   temp = dht.readTemperature(); // Mengukur nilai temperature udara
@@ -66,79 +67,25 @@ void bacaSensor() {
   Serial.println("Suhu Udara: "+String(temp)+"°C");
   Serial.println("Kelembaban Udara: "+String(hum)+"%");
   Serial.println("Kelembaban Tanah: "+String(moisture)+"%");
-  Serial.println("Intensitas Cahaya: "+String(ldr)+"lux");
+  Serial.println("Intensitas Cahaya: "+String(lux)+"lux");
 }
 
 // Kendali Otomatis Pompa
 void Threshold(){
-  // Jika suhu udara rendah, maka : 
-  if (temp >= 0 && temp < 16) {
+  // Jika suhu udara rendah / kelembaban tinggi / intensitas cahaya rendah / tanah basah, maka : 
+  if (temp >= 0 && temp < 16 || hum > 90 && hum <= 100 || lux >= 0 && lux < 200 || moisture >= wetSoil) {
     pump = "OFF"; // status pompa: OFF
     digitalWrite(PIN_WATERPUMP, relayOFF); // Pompa air mati
   }
 
-  // Jika kelembaban tinggi, maka :
-  if (hum > 90 && hum <= 100) {
+  // Jika suhu udara sedang / kelembaban sedang / intensitas cahaya sedang / tanah lembab, maka :
+  if (temp >= 16 && temp <= 34 || hum >= 30 && hum <= 90 || lux >= 200 && lux < 500 || moisture > drySoil && moisture < wetSoil) { 
     pump = "OFF"; // status pompa: OFF
     digitalWrite(PIN_WATERPUMP, relayOFF); // Pompa air mati
   }
 
-  // Jika intensitas cahaya rendah, maka :
-  if (ldr >= 500 && ldr <= 100000) {
-    pump = "OFF"; // status pompa: OFF
-    digitalWrite(PIN_WATERPUMP, relayOFF); // Pompa air mati 
-  }
-
-  // Jika suhu udara sedang, maka :
-  if (temp >= 16 && temp <= 34) { 
-    pump = "OFF"; // status pompa: OFF
-    digitalWrite(PIN_WATERPUMP, relayOFF); // Pompa air mati
-  }
-
-  // Jika kelembaban sedang, maka :
-  if (hum >= 30 && hum <= 90) { 
-    pump = "OFF"; // status pompa: OFF
-    digitalWrite(PIN_WATERPUMP, relayOFF); // Pompa air mati
-  }
-
-  // Jika intensitas cahaya sedang, maka :
-  if (ldr >= 200 && ldr < 500) {
-    pump = "OFF"; // status pompa: OFF
-    digitalWrite(PIN_WATERPUMP, relayOFF); // Pompa air mati
-  }
-
-  // Jika suhu udara tinggi, maka :
-  if (temp > 34 && temp <= 80) { 
-    pump = "ON"; // status pompa: ON
-    digitalWrite(PIN_WATERPUMP, relayON); // Pompa air menyala
-  }
-  
-  // Jika kelembaban rendah, maka :
-  if (hum >= 0 && hum < 30) { 
-    pump = "ON"; // status pompa: ON
-    digitalWrite(PIN_WATERPUMP, relayON); // Pompa air menyala
-  }
-  
-  // Jika intensitas cahaya tinggi, maka :
-  if (ldr >= 0 && ldr < 200) {
-    pump = "ON"; // status pompa: ON
-    digitalWrite(PIN_WATERPUMP, relayON); // Pompa air menyala
-  }
-
-  // Jika kondisi tanah basah maka :
-  if (moisture >= wetSoil){
-    pump = "OFF"; // status pompa: OFF
-    digitalWrite(PIN_WATERPUMP, relayOFF); // Pompa air mati
-  }
-
-  // Jika kondisi tanah lembab maka :
-  if (moisture > drySoil && moisture < wetSoil) {
-    pump = "OFF"; // status pompa: OFF
-    digitalWrite(PIN_WATERPUMP, relayOFF); // Pompa air mati
-  }
-
-  // Jika kondisi tanah kering maka :
-  if (moisture <= drySoil) { 
+  // Jika suhu udara tinggi / kelembaban rendah / intensitas cahaya tinggi / tanah kering, maka :
+  if (temp > 34 && temp <= 80 || hum >= 0 && hum < 30 || lux >= 500 && lux <= 100000 || moisture <= drySoil) { 
     pump = "ON"; // status pompa: ON
     digitalWrite(PIN_WATERPUMP, relayON); // Pompa air menyala
   }
@@ -171,7 +118,7 @@ void kirimAntares() {
       httpRequestData += "\\\",\\\"Kelembapan Tanah (%)\\\":\\\"";
       httpRequestData += String(moisture);
       httpRequestData += "\\\",\\\"Intensitas Cahaya (lux)\\\":\\\"";
-      httpRequestData += String(ldr);
+      httpRequestData += String(lux);
       httpRequestData += "\\\",\\\"Status Pompa\\\":\\\"";
       httpRequestData += String(pump);
       httpRequestData += "\\\"}\"}}";
