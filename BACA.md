@@ -487,7 +487,7 @@ void loop() {
 <br><br>
 
 ## Catatan
-> [!PENTING]
+> [!IMPORTANT]
 > Ada Sedikit Masalah di Bagian Pembacaan RFID.
 
 <br><br>
