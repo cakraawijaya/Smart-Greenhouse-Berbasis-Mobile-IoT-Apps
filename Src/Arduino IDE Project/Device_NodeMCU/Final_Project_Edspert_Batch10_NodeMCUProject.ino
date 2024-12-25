@@ -3,7 +3,6 @@
 #include <ESP8266HTTPClient.h>
 #include <SPI.h>
 #include <MFRC522.h>
-#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
 // Koneksi
