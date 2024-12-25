@@ -230,7 +230,6 @@ void sendAntares(String alarm, String pintu){
 // Method untuk mengatur inisiasi awal
 void setup() {
   Serial.begin(115200); // Baudrate untuk papan NodeMCU
-  pinMode(SW420_PIN,INPUT); // Inisialisasi pin sw-420 sebagai INPUT
   pinMode(BUZZER_PIN,OUTPUT); // Inisialisasi pin buzzer sebagai OUTPUT
   pinMode(RSOLENOID_DOORLOCK_PIN,OUTPUT); // Inisialisasi pin solenoid door lock sebagai OUTPUT
   digitalWrite(BUZZER_PIN, LOW); // Default buzzer: OFF
