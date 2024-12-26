@@ -84,6 +84,14 @@ Green House is a building for plant cultivation that has a translucent roof and 
 <td><img src="Assets/Documentation/Diagram/Systems Diagram.jpg" alt="systems-diagram"></td>
 </tr>
 </table>
+<table>
+<tr>
+<th width="840">Wiring</th>
+</tr>
+<tr>
+<td><img src="Assets/Documentation/Table/Device Wiring.jpg" alt="device-wiring"></td>
+</tr>
+</table>
 
 <br><br>
 
