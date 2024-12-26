@@ -86,10 +86,11 @@ Green House adalah bangunan untuk budidaya tanaman yang memiliki struktur atap d
 </table>
 <table>
 <tr>
-<th width="840">Pengkabelan</th>
+<th colspan="2">Pengkabelan</th>
 </tr>
 <tr>
-<td><img src="Assets/Documentation/Table/Device Wiring.jpg" alt="device-wiring"></td>
+<td width="420"><img src="Assets/Documentation/Table/Device Wiring-1.jpg" alt="device-wiring1"></td>
+<td width="420"><img src="Assets/Documentation/Table/Device Wiring-2.jpg" alt="device-wiring2"></td>
 </tr>
 </table>
 
