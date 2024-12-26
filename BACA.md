@@ -66,12 +66,20 @@ Green House adalah bangunan untuk budidaya tanaman yang memiliki struktur atap d
 ## Rancangan Proyek
 <table>
 <tr>
-<th width="280">Infrastruktur</th>
-<th width="280">Diagram Ilustrasi untuk ESP32</th>
-<th width="280">Diagram Ilustrasi untuk NodeMCU</th>
+<th width="840">Infrastruktur</th>
 </tr>
 <tr>
 <td><img src="Assets/Documentation/Diagram/Infrastructure.jpg" alt="infrastructure"></td>
+<td><img src="Assets/Documentation/Diagram/Pictorial Diagram 1.jpg" alt="pd-esp32"></td>
+<td><img src="Assets/Documentation/Diagram/Pictorial Diagram 2.jpg" alt="pd-nodemcu"></td>
+</tr>
+</table>
+<table>
+<tr>
+<th width="420">Diagram Ilustrasi untuk ESP32</th>
+<th width="420">Diagram Ilustrasi untuk NodeMCU</th>
+</tr>
+<tr>
 <td><img src="Assets/Documentation/Diagram/Pictorial Diagram 1.jpg" alt="pd-esp32"></td>
 <td><img src="Assets/Documentation/Diagram/Pictorial Diagram 2.jpg" alt="pd-nodemcu"></td>
 </tr>
@@ -86,13 +94,16 @@ Green House adalah bangunan untuk budidaya tanaman yang memiliki struktur atap d
 </table>
 <table>
 <tr>
-<th colspan="2">Pengkabelan</th>
+<th width="840">Pengkabelan</th>
 </tr>
 <tr>
-<td width="420"><img src="Assets/Documentation/Table/Device Wiring-1.jpg" alt="device-wiring1"></td>
-<td width="420"><img src="Assets/Documentation/Table/Device Wiring-2.jpg" alt="device-wiring2"></td>
+<td><img src="Assets/Documentation/Table/Device Wiring-1.jpg" alt="device-wiring1"></td>
+</tr>
+<tr>
+<td><img src="Assets/Documentation/Table/Device Wiring-2.jpg" alt="device-wiring2"></td>
 </tr>
 </table>
+
 
 <br><br>
 

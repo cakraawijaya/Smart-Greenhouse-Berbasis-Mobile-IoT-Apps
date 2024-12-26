@@ -66,12 +66,18 @@ Green House is a building for plant cultivation that has a translucent roof and 
 ## Project Designs
 <table>
 <tr>
-<th width="280">Infrastructure</th>
-<th width="280">Pictorial Diagram for ESP32</th>
-<th width="280">Pictorial Diagram for NodeMCU</th>
+<th width="840">Infrastructure</th>
 </tr>
 <tr>
 <td><img src="Assets/Documentation/Diagram/Infrastructure.jpg" alt="infrastructure"></td>
+</tr>
+</table>
+<table>
+<tr>
+<th width="420">Pictorial Diagram for ESP32</th>
+<th width="420">Pictorial Diagram for NodeMCU</th>
+</tr>
+<tr>
 <td><img src="Assets/Documentation/Diagram/Pictorial Diagram 1.jpg" alt="pd-esp32"></td>
 <td><img src="Assets/Documentation/Diagram/Pictorial Diagram 2.jpg" alt="pd-nodemcu"></td>
 </tr>
@@ -86,11 +92,13 @@ Green House is a building for plant cultivation that has a translucent roof and 
 </table>
 <table>
 <tr>
-<th colspan="2">Wiring</th>
+<th width="840">Wiring</th>
 </tr>
 <tr>
-<td width="420"><img src="Assets/Documentation/Table/Device Wiring-1.jpg" alt="device-wiring1"></td>
-<td width="420"><img src="Assets/Documentation/Table/Device Wiring-2.jpg" alt="device-wiring2"></td>
+<td><img src="Assets/Documentation/Table/Device Wiring-1.jpg" alt="device-wiring1"></td>
+</tr>
+<tr>
+<td><img src="Assets/Documentation/Table/Device Wiring-2.jpg" alt="device-wiring2"></td>
 </tr>
 </table>
 
