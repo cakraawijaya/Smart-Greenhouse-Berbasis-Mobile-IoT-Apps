@@ -504,9 +504,8 @@ void loop() {
 
 <br><br>
 
-## Catatan
+## <img src="https://github.com/user-attachments/assets/932b96eb-cbc7-42f1-8938-43cb431889a5" width="16" height="16"> Catatan
 <blockquote>
-   <h3><img src="https://github.com/user-attachments/assets/932b96eb-cbc7-42f1-8938-43cb431889a5" width="16" height="16"> Penting</h3>
    Ada Sedikit Masalah di Bagian Pembacaan RFID.
 </blockquote>
 
