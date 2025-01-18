@@ -46,7 +46,7 @@ Green House adalah bangunan untuk budidaya tanaman yang memiliki struktur atap d
    <table><tr><td width="810">
    
    ```
-   https://bit.ly/CH340_USB_Driver
+   https://bit.ly/CH340_USBdriver
    ```
 
    </td></tr></table><br>
@@ -56,7 +56,7 @@ Green House adalah bangunan untuk budidaya tanaman yang memiliki struktur atap d
    <table><tr><td width="810">
    
    ```
-   https://bit.ly/CP210X_USB_Driver
+   https://bit.ly/CP210X_USBdriver
    ```
 
    </td></tr></table>
