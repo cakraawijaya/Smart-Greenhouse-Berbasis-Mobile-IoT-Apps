@@ -26,7 +26,7 @@ Green House is a building for plant cultivation that has a translucent roof and 
 | Actuators | • Submersible pump (x1)<br>• Solenoid Door Lock (x1)<br>• Piezo buzzer (x1) |
 | Sensor | • FC-28: Resistive Soil Moisture (x1)<br>• LDR: Light Dependent Resistor (x1)<br>• DHT22: Air Temperature & Humidity (x1)<br>• SW-420: Vibration (x1)<br>• RFID Reader (x1) |
 | Display | LCD I2C (x1) |
-| Other Components | • Micro USB cable - USB type A (x1)<br>• Jumper cable (1 set)<br>• Switching power supply 12V 3A (x1)<br>• Electrical relay 1 channel (x1)<br>• Step Down LM2596 Adjustable 3A DC-DC (x2)<br>• Breadboard (x2)<br>• NodeMCU expansion board (x1)<br>• Casing box (x1)<br>• RFID Card (x2)<br>• Connector male jack DC (x1)<br>• Bolts plus (1 set)<br>• Nuts (1 set) |
+| Other Components | • Micro USB cable - USB type A (x1)<br>• Jumper cable (1 set)<br>• Switching power supply 12V 3A (x1)<br>• Electromechanical relay 1-channel (x1)<br>• Step Down LM2596 Adjustable 3A DC-DC (x2)<br>• Breadboard (x2)<br>• NodeMCU expansion board (x1)<br>• Casing box (x1)<br>• RFID Card (x2)<br>• Connector male jack DC (x1)<br>• Bolts plus (1 set)<br>• Nuts (1 set) |
 
 <br><br>
 
