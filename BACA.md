@@ -189,7 +189,7 @@ void loop() {
       Cara mengatur board ``` DOIT ESP32 DEVKIT V1 ```
    
       </th></tr>
-      <tr><td colspan="2">
+      <tr><td colspan="2" width="780">
 
       • Klik bagian ``` Tools ``` -> ``` Board ``` -> ``` Boards Manager ``` -> Instal ``` esp32 ```.
 
@@ -206,7 +206,7 @@ void loop() {
       Cara mengatur board ``` NodeMCU V3 ESP8266 Lolin ```
             
       </th></tr>
-      <tr><td colspan="2">
+      <tr><td colspan="2" width="775">
 
       • Klik bagian ``` Tools ``` -> ``` Board ``` -> ``` Boards Manager ``` -> Instal ``` esp8266 ```.
 
@@ -227,7 +227,7 @@ void loop() {
       Cara mengubah kecepatan board ``` DOIT ESP32 DEVKIT V1 ```
    
       </th></tr>
-      <tr><td colspan="2">
+      <tr><td colspan="2" width="780">
 
       Klik ``` Tools ``` -> ``` Upload Speed ``` -> ``` 115200 ```
               
@@ -242,7 +242,7 @@ void loop() {
       Cara mengubah kecepatan board ``` NodeMCU V3 ESP8266 Lolin ```
             
       </th></tr>
-      <tr><td colspan="2">
+      <tr><td colspan="2" width="775">
 
       Klik ``` Tools ``` -> ``` Upload Speed ``` -> ``` 115200 ```
             
