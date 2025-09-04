@@ -1,11 +1,11 @@
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?style=flat)](https://github.com/ellerbrock/open-source-badges/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?logo=github&color=%23F7DF1E)](https://opensource.org/licenses/MIT)
-![GitHub last commit](https://img.shields.io/github/last-commit/cakraawijaya/Smart-Green-House-Berbasis-IoT-Mobile-Apps?logo=Codeforces&logoColor=white&color=%23F7DF1E)
+![GitHub last commit](https://img.shields.io/github/last-commit/cakraawijaya/Smart-Green-House-Berbasis-Mobile-IoT-Apps?logo=Codeforces&logoColor=white&color=%23F7DF1E)
 ![Project1](https://img.shields.io/badge/Project-%2D1-ESP32-light.svg?style=flat&logo=arduino&logoColor=white&color=%23F7DF1E)
 ![Project2](https://img.shields.io/badge/Project-%2D2-NodeMCU-light.svg?style=flat&logo=espressif&logoColor=white&color=%23F7DF1E)
 ![Type](https://img.shields.io/badge/Type-Apprenticeship-light.svg?style=flat&logo=gitbook&logoColor=white&color=%23F7DF1E)
 
-# Smart-Green-House-Berbasis-IoT-Mobile-Apps
+# Smart Green House Berbasis Mobile IoT Apps
 <strong>Tugas Akhir Edspert.id: Intensive Bootcamp Internet of Things Batch-10</strong><br><br>
 Green House adalah bangunan untuk budidaya tanaman yang memiliki struktur atap dan dinding tembus cahaya. Para petani terbantu oleh adanya Green House ini, namun tetap saja memerlukan pengondisian tertentu agar dapat mencapai apa yang diinginkan. Hal ini biasanya dilakukan secara tradisional, sehingga dinilai kurang efektif terutama pada jaman yang penuh dengan teknologi serba canggih seperti sekarang ini. Selain itu, rawannya pencurian dan pembobolan bangunan adalah topik yang perlu diperhatikan selain pemeliharaan sayuran. Proyek ini dibuat untuk membantu para petani agar dapat mengelola Green House yang mereka miliki dengan cepat dan tepat baik dalam jarak yang dekat maupun jarak yang jauh. Proyek ini telah dilaksanakan dan memakan waktu kurang lebih 1 bulan. Sistem yang dibuat ini dapat memantau suhu udara, kelembaban udara, kelembaban tanah, intensitas cahaya, status pompa, status pintu, dan alarm keamanan. Selain itu, sistem ini juga telah disediakan fitur kendali pompa dan kunci pintu secara otomatis, sehingga hal ini dapat meningkatkan efisiensi dalam pemeliharaan sayuran dan keamanan yang ada di area Green House. Sistem ini berbasis Internet of Things (IoT) yaitu dengan menggunakan HTTP sebagai protokol komunikasinya. Antarmuka sistem menggunakan aplikasi MIT App Inventor.
 
