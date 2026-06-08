@@ -106,47 +106,221 @@ Greenhouse is a building for plant cultivation that has a translucent roof and w
 
 ## Scanning the I2C Address on the LCD
 ```ino
+/*
+  =====================================================
+  I2C Scanner for Arduino / ESP32 / ESP8266
+  by: Devan Cakra Mudra Wijaya, S.Kom.
+  =====================================================
+
+  Functions:
+  - Detects all connected I2C devices
+  - Displays device addresses in HEX format
+  - Displays the total number of detected devices
+
+
+  =====================================================
+  SDA and SCL Pins for Arduino / ESP32 / ESP8266
+  =====================================================
+  Arduino I2C Connection (default):
+  - Arduino Uno / Nano (ATmega328P)
+    SDA -> A4
+    SCL -> A5
+
+  - Arduino Mega 2560
+    SDA -> D20
+    SCL -> D21
+
+  - Other Arduino boards
+    SDA -> SDA pin
+    SCL -> SCL pin
+    (Refer to the datasheet or board pinout)
+
+  ESP32 I2C Connection (default):
+  SDA -> GPIO 21
+  SCL -> GPIO 22
+
+  ESP8266 I2C Connection (default):
+  SDA -> GPIO 4 (D2)
+  SCL -> GPIO 5 (D1)
+*/
+
+// Include the Wire library for I2C communication
 #include <Wire.h>
 
-void setup() {
-  Wire.begin();
-  Serial.begin(115200);
-  while (!Serial); // Wait for serial monitor
-  Serial.println("\nI2C Scanner");
+// Constant that defines the delay between scans (5000 ms = 5 seconds)
+const uint32_t SCAN_INTERVAL = 5000;
+
+
+// Function to initialize I2C communication
+// SDA and SCL pin configuration will be adjusted automatically based on the board being used
+void initI2C() {
+
+  // If the board being used is ESP32:
+  #if defined(ESP32)
+
+    // Enable I2C communication
+    // SDA = GPIO21
+    // SCL = GPIO22
+    Wire.begin(21, 22);
+
+  // If the board being used is ESP8266:
+  #elif defined(ESP8266)
+
+    // Enable I2C communication
+    // SDA = D2 (GPIO4)
+    // SCL = D1 (GPIO5)
+    Wire.begin(D2, D1);
+
+  // If the board is neither ESP32 nor ESP8266
+  // Examples: Arduino Uno, Nano, Mega, Leonardo, etc.
+  #else
+
+    // Enable I2C communication using the board's built-in hardware pins
+    Wire.begin();
+
+  #endif
+
 }
 
+
+// The setup() function runs once when the board is powered on or reset
+// It is used to initialize hardware, serial communication, sensors, modules, and the program's initial configuration
+void setup() {
+
+  // Start Serial communication at 115200 baud rate
+  Serial.begin(115200);
+
+  // Check whether the board uses native USB
+  // Examples: Arduino Leonardo, Arduino Micro, some ESP32-S2/S3 boards
+  #if defined(USBCON) || defined(ARDUINO_USB_CDC_ON_BOOT)
+
+    // If yes:
+    // The program will wait until the Serial Monitor is connected before continuing execution
+    while (!Serial);
+
+  #endif
+
+  // Wait for 2 seconds before starting the program
+  delay(2000);
+
+  // Display program header
+  Serial.println("====================================");
+  Serial.println("         I2C DEVICE SCANNER         ");
+  Serial.println("by: Devan Cakra Mudra Wijaya, S.Kom.");
+  Serial.println("====================================");
+
+  // Print an empty line
+  Serial.println();
+
+  // Initialize I2C communication
+  initI2C();
+}
+
+
+// The loop() function runs continuously after setup() has finished
+// The main program logic is typically placed inside this function
 void loop() {
-  int nDevices = 0;
-  Serial.println("Scanning...");
 
-  for (byte address = 1; address < 127; ++address) {
-    // The i2c_scanner uses the return value of the Wire.endTransmission to see if a device did acknowledge to the address.
+  // Variable to store the error code returned from I2C communication
+  uint8_t error;
+
+  // Variable to store the I2C address currently being checked
+  uint8_t address;
+
+  // Counter variable for the number of detected devices
+  uint8_t deviceCount = 0;
+
+  // Display information indicating that the scan process has started
+  Serial.println("------------------------------------");
+  Serial.println("Scanning I2C bus...");
+  Serial.println("------------------------------------");
+
+  // Loop through addresses from 1 to 126
+  // Valid I2C addresses range from 0x01 to 0x7E
+  for (address = 1; address < 127; address++) {
+
+    // Start communication with the address currently being tested
     Wire.beginTransmission(address);
-    byte error = Wire.endTransmission();
 
+    // End the transmission and store the result
+    // 0 = success
+    // 1 = data too long
+    // 2 = NACK received when address was sent
+    // 3 = NACK received when data was sent
+    // 4 = other error
+    error = Wire.endTransmission();
+
+    // If no error occurs:
     if (error == 0) {
-      Serial.print("I2C device found at address 0x");
-      if (address < 16) {
-        Serial.print("0");
-      }
-      Serial.print(address, HEX);
-      Serial.println("  !");
 
-      ++nDevices;
-    } else if (error == 4) {
-      Serial.print("Unknown error at address 0x");
+      // Display information that a device was found
+      Serial.print("[FOUND] Device at address 0x");
+
+      // If the address is less than 16:
+      // Add a leading zero to keep HEX formatting aligned
       if (address < 16) {
         Serial.print("0");
       }
+
+      // Display the address in HEX format
+      Serial.println(address, HEX);
+
+      // Increment the detected device count
+      deviceCount++;
+    }
+
+    // If an unknown error occurs:
+    else if (error == 4) {
+
+      // Display an error message
+      Serial.print("[ERROR] Unknown error at address 0x");
+
+      // If the address is less than 16:
+      // Add a leading zero to keep HEX formatting aligned
+      if (address < 16) {
+        Serial.print("0");
+      }
+
+      // Display the problematic address in HEX format
       Serial.println(address, HEX);
     }
+
+    // If the error is neither 0 nor 4:
+    // Ignore it, as this usually means no device exists at that address
   }
-  if (nDevices == 0) {
-    Serial.println("No I2C devices found\n");
-  } else {
-    Serial.println("done\n");
+
+  // Print an empty line
+  Serial.println();
+
+  // If no devices were found:
+  if (deviceCount == 0) {
+
+    // Display a message indicating that no devices were found
+    Serial.println("No I2C devices found.");
   }
-  delay(5000); // Wait 5 seconds for next scan
+  else { // If at least one device was found:
+
+    // Display the total number of detected devices
+    Serial.print("Total devices found: ");
+
+    // Display the value of deviceCount
+    Serial.println(deviceCount);
+  }
+
+  // Display information about the next scan
+  Serial.print("Next scan in ");
+
+  // Convert milliseconds to seconds
+  Serial.print(SCAN_INTERVAL / 1000);
+
+  // Display the unit in seconds
+  Serial.println(" seconds.");
+
+  // Empty line
+  Serial.println("\n");
+
+  // Wait 5 seconds before performing the next scan
+  delay(SCAN_INTERVAL);
 }
 ```
 
