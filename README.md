@@ -105,6 +105,8 @@ Greenhouse is a building for plant cultivation that has a translucent roof and w
 <br><br>
 
 ## Scanning the I2C Address on the LCD
+<table><tr><td width="840">
+
 ```ino
 /*
   =====================================================
@@ -324,7 +326,7 @@ void loop() {
 }
 ```
 
-<br><br>
+</td></tr></table><br><br>
 
 ## Arduino IDE Setup
 1. Open the ``` Arduino IDE ``` first, then open the project by clicking ``` File ``` -> ``` Open ``` :
