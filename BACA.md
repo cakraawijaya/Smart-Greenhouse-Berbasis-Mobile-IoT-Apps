@@ -107,47 +107,221 @@ Greenhouse adalah bangunan untuk budidaya tanaman yang memiliki struktur atap da
 
 ## Memindai Alamat I2C Yang Ada Pada LCD
 ```ino
+/*
+  =====================================================
+  I2C Scanner untuk Arduino / ESP32 / ESP8266
+  by: Devan Cakra Mudra Wijaya, S.Kom.
+  =====================================================
+
+  Fungsi:
+  - Mendeteksi seluruh perangkat I2C yang terhubung
+  - Menampilkan alamat perangkat dalam format HEX
+  - Menampilkan jumlah perangkat yang ditemukan
+
+
+  =====================================================
+  Pin SDA dan SCL untuk Arduino / ESP32 / ESP8266
+  =====================================================
+  Koneksi I2C Arduino (default):
+  - Arduino Uno / Nano (ATmega328P)
+    SDA -> A4
+    SCL -> A5
+
+  - Arduino Mega 2560
+    SDA -> D20
+    SCL -> D21
+
+  - Board Arduino lainnya
+    SDA -> Pin SDA
+    SCL -> Pin SCL
+    (Lihat datasheet atau pinout board)
+
+  Koneksi I2C ESP32 (default):
+  SDA -> GPIO 21
+  SCL -> GPIO 22
+
+  Koneksi I2C ESP8266 (default):
+  SDA -> GPIO 4 (D2)
+  SCL -> GPIO 5 (D1)
+*/
+
+// Memanggil library Wire untuk komunikasi I2C
 #include <Wire.h>
 
-void setup() {
-  Wire.begin();
-  Serial.begin(115200);
-  while (!Serial); // Wait for serial monitor
-  Serial.println("\nI2C Scanner");
+// Konstanta untuk menentukan jeda antar scan (5000 ms = 5 detik)
+const uint32_t SCAN_INTERVAL = 5000;
+
+
+// Fungsi untuk menginisialisasi komunikasi I2C
+// Konfigurasi pin SDA dan SCL akan disesuaikan secara otomatis berdasarkan jenis board yang digunakan
+void initI2C() {
+
+  // Jika board yang digunakan adalah ESP32, maka:
+  #if defined(ESP32)
+
+    // Mengaktifkan komunikasi I2C
+    // SDA = GPIO21
+    // SCL = GPIO22
+    Wire.begin(21, 22);
+
+  // Jika board yang digunakan adalah ESP8266, maka:
+  #elif defined(ESP8266)
+
+    // Mengaktifkan komunikasi I2C
+    // SDA = D2 (GPIO4)
+    // SCL = D1 (GPIO5)
+    Wire.begin(D2, D1);
+
+  // Jika board yang digunakan bukan ESP32 maupun ESP8266
+  // Contoh: Arduino Uno, Nano, Mega, Leonardo, dll, maka:
+  #else
+
+    // Mengaktifkan komunikasi I2C menggunakan pin hardware bawaan board
+    Wire.begin();
+
+  #endif
+
 }
 
+
+// Fungsi setup() dijalankan satu kali saat board pertama kali menyala atau reset
+// Digunakan untuk inisialisasi perangkat keras, komunikasi serial, sensor, modul, dan konfigurasi awal program
+void setup() {
+
+  // Memulai komunikasi Serial dengan baud rate 115200
+  Serial.begin(115200);
+
+  // Mengecek apakah board menggunakan USB native
+  // Contoh: Arduino Leonardo, Arduino Micro, beberapa ESP32-S2/S3
+  #if defined(USBCON) || defined(ARDUINO_USB_CDC_ON_BOOT)
+
+    // Jika iya, maka:
+    // Program akan menunggu sampai Serial Monitor terhubung sebelum melanjutkan eksekusi program
+    while (!Serial);
+
+  #endif
+
+  // Menunggu selama 2 detik sebelum program dimulai
+  delay(2000);
+
+  // Menampilkan header program
+  Serial.println("====================================");
+  Serial.println("         I2C DEVICE SCANNER         ");
+  Serial.println("by: Devan Cakra Mudra Wijaya, S.Kom.");
+  Serial.println("====================================");
+
+  // Mencetak baris kosong
+  Serial.println();
+
+  // Menginisialisasi komunikasi I2C
+  initI2C();
+}
+
+
+// Fungsi loop() dijalankan terus-menerus setelah Fungsi setup() selesai
+// Seluruh logika utama program biasanya ditempatkan di dalam fungsi ini
 void loop() {
-  int nDevices = 0;
-  Serial.println("Scanning...");
 
-  for (byte address = 1; address < 127; ++address) {
-    // The i2c_scanner uses the return value of the Wire.endTransmission to see if a device did acknowledge to the address.
+  // Variabel untuk menyimpan kode error hasil komunikasi I2C
+  uint8_t error;
+
+  // Variabel untuk menyimpan alamat I2C yang sedang diperiksa
+  uint8_t address;
+
+  // Variabel penghitung jumlah device yang ditemukan
+  uint8_t deviceCount = 0;
+
+  // Menampilkan informasi bahwa proses scan dimulai
+  Serial.println("------------------------------------");
+  Serial.println("Scanning I2C bus...");
+  Serial.println("------------------------------------");
+
+  // Melakukan perulangan dari alamat 1 sampai 126
+  // Alamat I2C valid adalah 0x01 sampai 0x7E
+  for (address = 1; address < 127; address++) {
+
+    // Memulai komunikasi ke alamat yang sedang diuji
     Wire.beginTransmission(address);
-    byte error = Wire.endTransmission();
 
+    // Mengakhiri transmisi dan menyimpan hasilnya
+    // 0 = sukses
+    // 1 = data terlalu panjang
+    // 2 = NACK saat alamat dikirim
+    // 3 = NACK saat data dikirim
+    // 4 = error lain
+    error = Wire.endTransmission();
+
+    // Jika tidak ada error, maka:
     if (error == 0) {
-      Serial.print("I2C device found at address 0x");
-      if (address < 16) {
-        Serial.print("0");
-      }
-      Serial.print(address, HEX);
-      Serial.println("  !");
 
-      ++nDevices;
-    } else if (error == 4) {
-      Serial.print("Unknown error at address 0x");
+      // Menampilkan informasi device ditemukan
+      Serial.print("[FOUND] Device at address 0x");
+
+      // Jika alamat kurang dari 16, maka:
+      // Tambahkan angka 0 di depan agar format HEX rapi
       if (address < 16) {
         Serial.print("0");
       }
+
+      // Menampilkan alamat dalam format HEX
+      Serial.println(address, HEX);
+
+      // Menambah jumlah device yang ditemukan
+      deviceCount++;
+    }
+
+    // Jika terjadi error tidak dikenal, maka:
+    else if (error == 4) {
+
+      // Menampilkan pesan error
+      Serial.print("[ERROR] Unknown error at address 0x");
+
+      // Jika alamat kurang dari 16, maka:
+      // Tambahkan angka 0 di depan agar format HEX rapi
+      if (address < 16) {
+        Serial.print("0");
+      }
+
+      // Menampilkan alamat yang bermasalah dalam format HEX
       Serial.println(address, HEX);
     }
+
+    // Jika error selain 0 atau 4, maka:
+    // Diabaikan, biasanya ini terjadi karena tidak ada perangkat pada alamat tersebut
   }
-  if (nDevices == 0) {
-    Serial.println("No I2C devices found\n");
-  } else {
-    Serial.println("done\n");
+
+  // Mencetak baris kosong
+  Serial.println();
+
+  // Jika tidak ada device ditemukan, maka:
+  if (deviceCount == 0) {
+
+    // Tampilkan pesan tidak ada device
+    Serial.println("No I2C devices found.");
   }
-  delay(5000); // Wait 5 seconds for next scan
+  else { // Jika setidaknya satu perangkat ditemukan, maka:
+
+    // Menampilkan jumlah device yang ditemukan
+    Serial.print("Total devices found: ");
+
+    // Menampilkan nilai deviceCount
+    Serial.println(deviceCount);
+  }
+
+  // Menampilkan informasi waktu scan berikutnya
+  Serial.print("Next scan in ");
+
+  // Mengubah milidetik menjadi detik
+  Serial.print(SCAN_INTERVAL / 1000);
+
+  // Menampilkan satuan detik
+  Serial.println(" seconds.");
+
+  // Baris kosong
+  Serial.println("\n");
+
+  // Menunggu selama 5 detik sebelum scan ulang
+  delay(SCAN_INTERVAL);
 }
 ```
 
