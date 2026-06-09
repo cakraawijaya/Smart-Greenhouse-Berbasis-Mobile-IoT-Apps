@@ -15,7 +15,7 @@ Greenhouse adalah bangunan untuk budidaya tanaman yang memiliki struktur atap da
 | Bagian | Deskripsi |
 | --- | --- |
 | Papan Pengembangan | • DOIT ESP32 DEVKIT V1<br>• NodeMCU V3 ESP8266 Lolin |
-| Editor Kode | Arduino IDE |
+| Editor Kode | Arduino IDE 1.8.19 (Versi Lama yang Stabil) |
 | Driver | • CH340 USB Driver<br>• CP210X USB Driver |
 | Platform IoT | Antares |
 | Protokol Komunikasi | • Hypertext Transfer Protocol (HTTP)<br>• Universal Asynchronous Receiver-Transmitter (UART)<br>• Serial Peripheral Interface (SPI)<br>• Inter Integrated Circuit (I2C) |
