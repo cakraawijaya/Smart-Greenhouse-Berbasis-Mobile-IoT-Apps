@@ -15,7 +15,7 @@ Greenhouse is a building for plant cultivation that has a translucent roof and w
 | Part | Description |
 | --- | --- |
 | Development Board | • DOIT ESP32 DEVKIT V1<br>• NodeMCU V3 ESP8266 Lolin |
-| Code Editor | Arduino IDE |
+| Code Editor | Arduino IDE 1.8.19 (Stable Legacy Version) |
 | Driver | • CH340 USB Driver<br>• CP210X USB Driver |
 | IoT Platform | Antares |
 | Communications Protocol | • Hypertext Transfer Protocol (HTTP)<br>• Universal Asynchronous Receiver-Transmitter (UART)<br>• Serial Peripheral Interface (SPI)<br>• Inter Integrated Circuit (I2C) |
