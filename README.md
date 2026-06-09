@@ -22,7 +22,7 @@ Greenhouse is a building for plant cultivation that has a translucent roof and w
 | IoT Architecture | 4 Layer |
 | Application Support | MIT App Inventor |
 | Programming Language | C/C++ |
-| Arduino Library | • WiFi (default)<br>• HTTPClient (default)<br>• ESP8266WiFi (default)<br>• ESP8266HTTPClient (default)<br>• SPI (default)<br>• DHT_sensor_library<br>• LiquidCrystal_I2C<br>• ESP_FC28<br>• MFRC522 |
+| Arduino Library | • WiFi (default)<br>• HTTPClient (default)<br>• ESP8266WiFi (default)<br>• ESP8266HTTPClient (default)<br>• SPI (default)<br>• DHT_sensor_library by Adafruit (Version: 1.4.4)<br>• LiquidCrystal_I2C by Frank de Brabander (Version: 1.1.2)<br>• ESP_FC28 by cakraawijaya (Version: 1.0.0)<br>• MFRC522 by GithubCommunity (Version: 1.4.10) |
 | Actuators | • Submersible pump (x1)<br>• Solenoid Door Lock (x1)<br>• Piezo buzzer (x1) |
 | Sensor | • FC-28: Resistive Soil Moisture (x1)<br>• LDR: Light Dependent Resistor (x1)<br>• DHT22: Air Temperature & Humidity (x1)<br>• SW-420: Vibration (x1)<br>• RFID Reader (x1) |
 | Display | LCD I2C (x1) |
