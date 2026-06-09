@@ -22,7 +22,7 @@ Greenhouse adalah bangunan untuk budidaya tanaman yang memiliki struktur atap da
 | Arsitektur IoT | 4 Lapisan |
 | Dukungan Aplikasi | MIT App Inventor |
 | Bahasa Pemrograman | C/C++ |
-| Pustaka Arduino | • WiFi (bawaan)<br>• HTTPClient (bawaan)<br>• ESP8266WiFi (bawaan)<br>• ESP8266HTTPClient (bawaan)<br>• SPI (bawaan)<br>• DHT_sensor_library<br>• LiquidCrystal_I2C<br>• ESP_FC28<br>• MFRC522 |
+| Pustaka Arduino | • WiFi (bawaan)<br>• HTTPClient (bawaan)<br>• ESP8266WiFi (bawaan)<br>• ESP8266HTTPClient (bawaan)<br>• SPI (bawaan)<br>• DHT_sensor_library oleh Adafruit (Versi: 1.4.4)<br>• LiquidCrystal_I2C oleh Frank de Brabander (Versi: 1.1.2)<br>• ESP_FC28 oleh cakraawijaya (Versi: 1.0.0)<br>• MFRC522 oleh GithubCommunity (Versi: 1.4.10) |
 | Aktuator | • Submersible pump (x1)<br>• Solenoid Door Lock (x1)<br>• Piezo buzzer (x1) |
 | Sensor | • FC-28: Kelembaban Tanah Resistif (x1)<br>• LDR: Resistor Cahaya (x1)<br>• DHT22: Suhu & Kelembaban Udara (x1)<br>• SW-420: Getaran (x1)<br>• Pembaca RFID (x1) |
 | Layar | LCD I2C (x1) |
