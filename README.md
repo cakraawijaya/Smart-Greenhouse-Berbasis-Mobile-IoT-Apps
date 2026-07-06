@@ -24,7 +24,7 @@ Greenhouse is a building for plant cultivation that has a translucent roof and w
 | Programming Language | C/C++ |
 | Arduino Library | • WiFi (default)<br>• HTTPClient (default)<br>• ESP8266WiFi (default)<br>• ESP8266HTTPClient (default)<br>• SPI (default)<br>• DHT_sensor_library by Adafruit (Version: 1.4.4)<br>• LiquidCrystal_I2C by Frank de Brabander (Version: 1.1.2)<br>• ESP_FC28 by cakraawijaya (Version: 1.0.0)<br>• MFRC522 by GithubCommunity (Version: 1.4.10) |
 | Actuators | • Submersible pump (x1)<br>• Solenoid Door Lock (x1)<br>• Piezo buzzer (x1) |
-| Sensor | • FC-28: Resistive Soil Moisture (x1)<br>• LDR: Light Dependent Resistor (x1)<br>• DHT22: Air Temperature & Humidity (x1)<br>• SW-420: Vibration (x1)<br>• RFID Reader (x1) |
+| Sensor | • FC-28: Resistive Soil Moisture (x1)<br>• LDR: Light Dependent Resistor 12mm (x1)<br>• DHT22: Air Temperature & Humidity (x1)<br>• SW-420: Vibration (x1)<br>• RFID Reader (x1) |
 | Display | LCD I2C (x1) |
 | Other Components | • Micro USB cable - USB type A (x1)<br>• Jumper cable (1 set)<br>• Switching power supply 12V 3A (x1)<br>• Electromechanical relay 1-channel (x1)<br>• Step Down LM2596 Adjustable 3A DC-DC (x2)<br>• Breadboard (x2)<br>• NodeMCU expansion board (x1)<br>• Casing box (x1)<br>• RFID Card (x2)<br>• Connector male jack DC (x1)<br>• Bolts plus (1 set)<br>• Nuts (1 set) |
 
